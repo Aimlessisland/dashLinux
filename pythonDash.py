@@ -65,7 +65,7 @@ def drawRpm():
         center_y, 
         text="6500", 
         fill="white", 
-        font=("Helvetica", int(vehSpeed_height * 0.7), "bold")
+        font=("sans-serif", int(vehSpeed_height * 0.7), "bold")
     )
 
 def drawGear():
@@ -86,7 +86,7 @@ def drawGear():
         center_y, 
         text="N", 
         fill="yellow", 
-        font=("Helvetica", int(gearIndi_height * 0.8), "bold")
+        font=("sans-serif", int(gearIndi_height * 0.8), "bold")
     )
 
 def drawtyrePress():
@@ -114,7 +114,7 @@ def drawLiquid():
     
     padding = 20
     font_size = 20
-    text_font = ("Helvetica", font_size)
+    text_font = ("sans-serif", font_size)
     line_spacing = font_size + 15
     # Calculate the total height of the text block
     total_text_height = (len(data) - 1) * line_spacing
