@@ -97,6 +97,67 @@ def drawtyrePress():
     # Use the custom function to draw a rounded rectangle
     create_rounded_rectangle(canvas, x1, y1, x2, y2, radius=20, outline="orange", width=3)
 
+    canvas.create_text(
+        SCREEN_WIDTH / 2,
+        y1 + 25,
+        text="TYRE PRESSURE",
+        fill="orange",
+        font=("sans-serif", 21, "bold")
+    )
+
+        # Tyre pressure values
+    frontLeft = "145"
+    frontRight = "146"
+    backLeft = "147"
+    backRight = "148"
+    font_size = 25
+    
+    # Calculate positions for the four pressure values
+    center_x = (x1 + x2) / 2
+    center_y = (y1 + y2) / 2
+    frontPos = 35
+    backPos = 55
+    
+    # Front-left tire pressure
+    canvas.create_text(
+        center_x - 40,
+        center_y - frontPos,
+        text=frontLeft,
+        fill="white",
+        font=("sans-serif", font_size, "bold"),
+        anchor="ne"
+    )
+    
+    # Front-right tire pressure
+    canvas.create_text(
+        center_x + 40,
+        center_y - frontPos,
+        text=frontRight,
+        fill="white",
+        font=("sans-serif", font_size, "bold"),
+        anchor="nw"
+    )
+    
+    # Back-left tire pressure
+    canvas.create_text(
+        center_x - 40,
+        center_y + backPos,
+        text=backLeft,
+        fill="white",
+        font=("sans-serif", font_size, "bold"),
+        anchor="se"
+    )
+    
+    # Back-right tire pressure
+    canvas.create_text(
+        center_x + 40,
+        center_y + backPos,
+        text=backRight,
+        fill="white",
+        font=("sans-serif", font_size, "bold"),
+        anchor="sw"
+    )
+
 def drawLiquid():
     x1 = 10
     y1 = 10 + vehSpeed_height + 5
@@ -108,8 +169,9 @@ def drawLiquid():
     data = [
         ("Oil temp", "95°C"),
         ("Oil press", "2.5 BAR"),
-        ("Water temp", "85"),
-        ("Water press", "1.1 BAR")
+        ("Water temp", "85°C"),
+        ("Water press", "1.1 BAR"),
+        ("Turbo press", "15 PSI")
     ]
     
     padding = 20
@@ -127,7 +189,6 @@ def drawLiquid():
         # Calculate y position for the current line
         y_pos = start_y + (i * line_spacing)
         
-        # Draw the left-aligned label
         canvas.create_text(
             x1 + padding, 
             y_pos, 
@@ -137,7 +198,6 @@ def drawLiquid():
             anchor="w"
         )
         
-        # Draw the right-aligned value
         canvas.create_text(
             x2 - padding, 
             y_pos, 
@@ -150,11 +210,67 @@ def drawLiquid():
 
 def drawLaptime():
     x1 = 15 + liquid_width + gearIndi_width + 10
-    y1 = 10 + vehSpeed_height +5
+    y1 = 10 + vehSpeed_height + 5
     x2 = x1 + lapTime_width
     y2 = y1 + lapTime_height
-    create_rounded_rectangle(canvas, x1, y1, x2, y2, radius = 20, outline = "white", width=3)
-# Call the drawing functions
+    
+    # Draw the rounded rectangle
+    create_rounded_rectangle(canvas, x1, y1, x2, y2, radius=20, outline="white", width=3)
+    right_aligned_x = x2 - 20 
+    center_y = (y1 + y2) / 2
+    main_font_size = int(lapTime_height * 0.5)
+    small_font_size = int(lapTime_height * 0.1) 
+
+    # Create the main "120" text, right-aligned
+    canvas.create_text(
+        right_aligned_x,
+        center_y - 50, # Shift it slightly up
+        text="120",
+        fill="white",
+        font=("sans-serif", main_font_size, "bold"),
+        anchor="e" # Align to the east (right)
+    )
+
+    # Create the small "KM/H" text, also right-aligned
+    canvas.create_text(
+        right_aligned_x,
+        center_y + 35, # Shift it down, below the main text
+        text="KM/H",
+        fill="white",
+        font=("sans-serif", small_font_size),
+        anchor="e" # Align to the east (right)
+    )
+    
+    global fuel_icon
+    image = Image.open("fuel.png")
+    image = image.resize((30, 30))
+    root.fuel_icon = ImageTk.PhotoImage(image)
+    canvas.create_image(x1+25+5, y2-25, image=root.fuel_icon)
+    fuel_square_size = 30
+    fuel_padding = 5  # Spacing between the squares
+    num_squares = 8  # Number of squares to draw
+
+    # The starting x position for the first square, to the right of the fuel icon
+    start_x = x1 + 25 + 5 + 30 + 5 
+    square_y = y2 - 25 - (fuel_square_size / 2)
+
+    # Loop to draw each square
+    for i in range(num_squares):
+        # Calculate the x coordinates for the current square based on the loop index
+        current_x1 = start_x + (fuel_square_size + fuel_padding) * i
+        current_x2 = current_x1 + fuel_square_size
+
+        # Create the rectangle with a white fill
+        canvas.create_rectangle(
+            current_x1,
+            square_y,
+            current_x2,
+            square_y + fuel_square_size,
+            fill="white",
+            outline="white",
+            width=2
+        )
+    
 def drawLeftarrow():
     global tk_image 
     image = Image.open("arrow.png")
@@ -163,12 +279,44 @@ def drawLeftarrow():
     root.tk_image = ImageTk.PhotoImage(image)
     canvas.create_image(25+5, 50, image=root.tk_image)
 
+def drawHeadLight():
+    global headlight_image
+    image = Image.open("headlight.png")
+    image = image.resize((50, 50)) 
+    root.headlight_image = ImageTk.PhotoImage(image)
+    canvas.create_image(liquid_width - 20, 50, image=root.headlight_image)
+
+def drawHighbeam():
+    global highbeam_image
+    image = Image.open("highbeam.png")
+    image = image.resize((50, 50)) 
+    root.highbeam_image = ImageTk.PhotoImage(image)
+    canvas.create_image(liquid_width - 80, 50, image=root.highbeam_image)
+
+def drawHandbrake():
+    global handbrake_image
+    image = Image.open("handbrake.png")
+    image = image.resize((40, 35)) 
+    root.handbrake_image = ImageTk.PhotoImage(image)
+    canvas.create_image(liquid_width - 135, 50, image=root.handbrake_image)
+
+def drawlowBrake():
+    global lowbrake_image
+    image = Image.open("lowbrakefluid.png")
+    image = image.resize((42
+                          , 35)) 
+    root.lowbrake_image = ImageTk.PhotoImage(image)
+    canvas.create_image(liquid_width - 185, 50, image=root.lowbrake_image)
+
 def drawRightarrow():
     global tk_image2 
     image = Image.open("arrow.png")
     image = image.resize((50, 50))
     root.tk_image2 = ImageTk.PhotoImage(image)
     canvas.create_image(SCREEN_WIDTH - (25+5), 50, image=root.tk_image2)
+
+def close_window(event):
+    root.destroy()
 
 drawRpm()
 drawGear()
@@ -177,5 +325,11 @@ drawLiquid()
 drawLaptime()
 drawLeftarrow()
 drawRightarrow()
+drawHeadLight()
+drawHighbeam()
+drawHandbrake()
+drawlowBrake()
 # Start the Tkinter event loop
+root.bind('<Return>', close_window)
+
 root.mainloop()
