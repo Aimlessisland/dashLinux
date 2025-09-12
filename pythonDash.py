@@ -35,8 +35,8 @@ tyrePress_height = 150
 liquid_width = 370
 liquid_height = 250
 
-lapTime_width = 370
-lapTime_height =250
+righBox_width = 370
+righBox_height =250
 
 # Create the main window
 root = tk.Tk()
@@ -208,18 +208,18 @@ def drawLiquid():
         )
 
 
-def drawLaptime():
+def drawRightbox():
     x1 = 15 + liquid_width + gearIndi_width + 10
     y1 = 10 + vehSpeed_height + 5
-    x2 = x1 + lapTime_width
-    y2 = y1 + lapTime_height
+    x2 = x1 + righBox_width
+    y2 = y1 + righBox_height
     
     # Draw the rounded rectangle
     create_rounded_rectangle(canvas, x1, y1, x2, y2, radius=20, outline="white", width=3)
     right_aligned_x = x2 - 20 
     center_y = (y1 + y2) / 2
-    main_font_size = int(lapTime_height * 0.5)
-    small_font_size = int(lapTime_height * 0.1) 
+    main_font_size = int(righBox_height * 0.5)
+    small_font_size = int(righBox_height * 0.1) 
 
     # Create the main "120" text, right-aligned
     canvas.create_text(
@@ -279,12 +279,19 @@ def drawLeftarrow():
     root.tk_image = ImageTk.PhotoImage(image)
     canvas.create_image(25+5, 50, image=root.tk_image)
 
+def drawRightarrow():
+    global tk_image2 
+    image = Image.open("arrow.png")
+    image = image.resize((50, 50))
+    root.tk_image2 = ImageTk.PhotoImage(image)
+    canvas.create_image(SCREEN_WIDTH - (25+5), 50, image=root.tk_image2)
+
 def drawHeadLight():
     global headlight_image
     image = Image.open("headlight.png")
     image = image.resize((50, 50)) 
     root.headlight_image = ImageTk.PhotoImage(image)
-    canvas.create_image(liquid_width - 20, 50, image=root.headlight_image)
+    canvas.create_image(liquid_width - 22, 52, image=root.headlight_image)
 
 def drawHighbeam():
     global highbeam_image
@@ -308,27 +315,25 @@ def drawlowBrake():
     root.lowbrake_image = ImageTk.PhotoImage(image)
     canvas.create_image(liquid_width - 185, 50, image=root.lowbrake_image)
 
-def drawRightarrow():
-    global tk_image2 
-    image = Image.open("arrow.png")
-    image = image.resize((50, 50))
-    root.tk_image2 = ImageTk.PhotoImage(image)
-    canvas.create_image(SCREEN_WIDTH - (25+5), 50, image=root.tk_image2)
-
 def close_window(event):
     root.destroy()
+
+def drawMode():
+    x1 = (liquid_width + gearIndi_width) + 60
+    canvas.create_text(x1, 60, text="ECO", fill="green", font=("sans-serif", 20, "bold"))
 
 drawRpm()
 drawGear()
 drawtyrePress()
 drawLiquid()
-drawLaptime()
+drawRightbox()
 drawLeftarrow()
 drawRightarrow()
 drawHeadLight()
 drawHighbeam()
 drawHandbrake()
 drawlowBrake()
+drawMode()
 # Start the Tkinter event loop
 root.bind('<Return>', close_window)
 
