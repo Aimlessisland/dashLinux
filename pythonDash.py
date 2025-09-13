@@ -1,5 +1,6 @@
 from PIL import Image, ImageTk
 import tkinter as tk
+import keyboard
 
 def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
    
@@ -19,7 +20,8 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
               x1, y1]
 
     return canvas.create_polygon(points, smooth=True, **kwargs)
-    
+
+
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 
@@ -52,7 +54,10 @@ canvas.pack()
 canvas.create_rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, fill="black", outline="black")
 
 def drawRpm():
-    """Draws the vehicle speed box with rounded corners."""
+
+    #Engine rpm will just use str() to convert number to it. Will need input later to variated number
+    engineRPM = 6500
+
     x1 = (SCREEN_WIDTH / 2) - (vehSpeed_width / 2)
     y1 = 10
     x2 = x1 + vehSpeed_width
@@ -63,13 +68,14 @@ def drawRpm():
     canvas.create_text(
         center_x, 
         center_y, 
-        text="6500", 
+        text=str(engineRPM), 
         fill="white", 
         font=("sans-serif", int(vehSpeed_height * 0.7), "bold")
     )
 
-def drawGear():
-    """Draws the gear display box with rounded corners."""
+def drawGear(indicateGear):
+
+    gearIndicate = indicateGear
     x1 = (SCREEN_WIDTH / 2) - (gearIndi_width / 2)
     y1 = 10 + vehSpeed_height+5
     x2 = x1 + gearIndi_width
@@ -81,13 +87,32 @@ def drawGear():
     center_y = (y1 + y2) / 2
     
     # Draw the letter "N" in the center, sized to nearly fit the box
-    canvas.create_text(
+    text_id = canvas.create_text(
         center_x, 
         center_y, 
-        text="N", 
+        text=gearIndicate,
         fill="yellow", 
         font=("sans-serif", int(gearIndi_height * 0.8), "bold")
     )
+    root.bind("<Key>", lambda event: on_key_press(event, canvas, text_id))
+
+
+def on_key_press(event, canvas, text_id):
+    char = event.char
+    if char.isalnum():
+        canvas.itemconfig(text_id, text=char.upper())
+
+def create_input_canvas():
+    center_x = SCREEN_WIDTH / 2
+    center_y = SCREEN_HEIGHT / 2
+    text_id = canvas.create_text(
+        center_x, center_y,
+        text="",
+        fill="white",
+        font=("Arial", 200, "bold")
+    )
+    root.bind("<Key>", lambda event: on_key_press(event, canvas, text_id))
+    
 
 def drawtyrePress():
     x1 = (SCREEN_WIDTH / 2) - (gearIndi_width / 2)
@@ -322,19 +347,21 @@ def drawMode():
     x1 = (liquid_width + gearIndi_width) + 60
     canvas.create_text(x1, 60, text="ECO", fill="green", font=("sans-serif", 20, "bold"))
 
-drawRpm()
-drawGear()
-drawtyrePress()
-drawLiquid()
-drawRightbox()
-drawLeftarrow()
-drawRightarrow()
-drawHeadLight()
-drawHighbeam()
-drawHandbrake()
-drawlowBrake()
-drawMode()
-# Start the Tkinter event loop
-root.bind('<Return>', close_window)
+if __name__ == "__main__":
+    drawRpm()
+    drawGear("N")
+    drawtyrePress()
+    drawLiquid()
+    drawRightbox()
+    drawLeftarrow()
+    drawRightarrow()
+    drawHeadLight()
+    drawHighbeam()
+    drawHandbrake()
+    drawlowBrake()
+    drawMode()
+    # Start the Tkinter event loop
+    root.bind('<Return>', close_window)
 
-root.mainloop()
+    root.mainloop()
+
