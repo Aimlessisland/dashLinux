@@ -362,6 +362,5 @@ if __name__ == "__main__":
     drawMode()
     # Start the Tkinter event loop
     root.bind('<Return>', close_window)
-
     root.mainloop()
 
